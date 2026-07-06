@@ -1,4 +1,4 @@
-# CORE-CR on Llama-3-8B-Instruct (Table 4, Row 3)
+# CORE-CR on Llama-3-8B-Instruct (Table 3, Row 3)
 # max_response_length=2048
 
 MODEL_PATH="meta-llama/Meta-Llama-3-8B-Instruct"

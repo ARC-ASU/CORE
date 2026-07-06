@@ -1,4 +1,4 @@
-# CORE-CR on Qwen2.5-Math-1.5B (Table 4, Row 2)
+# CORE-CR on Qwen2.5-Math-1.5B (Table 3, Row 2)
 # max_response_length=2048
 
 MODEL_PATH="Qwen/Qwen2.5-Math-1.5B"

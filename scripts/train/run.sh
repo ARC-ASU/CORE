@@ -9,9 +9,9 @@
 #   core_cr           CORE-CR on Qwen2-Math-7B       (main result, Table 2)
 #   core_kl           CORE-KL on Qwen2-Math-7B       (Table 2)
 #   core_base         CORE-Base on Qwen2-Math-7B     (Table 2)
-#   core_cr_deepseek  CORE-CR on DeepSeek-R1-DQ-1.5B (Table 4)
-#   core_cr_qwen25    CORE-CR on Qwen2.5-Math-1.5B   (Table 4)
-#   core_cr_llama     CORE-CR on Llama-3-8B-Instruct (Table 4)
+#   core_cr_deepseek  CORE-CR on DeepSeek-R1-DQ-1.5B (Table 3)
+#   core_cr_qwen25    CORE-CR on Qwen2.5-Math-1.5B   (Table 3)
+#   core_cr_llama     CORE-CR on Llama-3-8B-Instruct (Table 3)
 #   core_cr_ppo       CORE-CR with PPO backbone       (Table 8)
 #
 # Examples:

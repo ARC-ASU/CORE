@@ -1,4 +1,4 @@
-# CORE-CR on DeepSeek-R1-Distill-Qwen-1.5B (Table 4, Row 1)
+# CORE-CR on DeepSeek-R1-Distill-Qwen-1.5B (Table 3, Row 1)
 # max_response_length=6000 to accommodate extended reasoning
 
 MODEL_PATH="deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"
