@@ -78,10 +78,10 @@ Available configs (`scripts/train/configs/`):
 | `core_cr` | CORE-CR (trajectory replacement) | Qwen2-Math-7B | 2 | Table 2 |
 | `core_kl` | CORE-KL (KL alignment) | Qwen2-Math-7B | 2 | Table 2 |
 | `core_base` | CORE-Base (standard GRPO) | Qwen2-Math-7B | 2 | Table 2 |
-| `core_cr_deepseek` | CORE-CR | DeepSeek-R1-DQ-1.5B | 4 | Table 4 |
-| `core_cr_qwen25` | CORE-CR | Qwen2.5-Math-1.5B | 4 | Table 4 |
-| `core_cr_llama` | CORE-CR | Llama-3-8B-Instruct | 2 | Table 4 |
-| `core_cr_ppo` | CORE-CR + PPO backbone | Qwen2-Math-7B | 2 | Table 6 |
+| `core_cr_deepseek` | CORE-CR | DeepSeek-R1-DQ-1.5B | 4 | Table 3 |
+| `core_cr_qwen25` | CORE-CR | Qwen2.5-Math-1.5B | 4 | Table 3 |
+| `core_cr_llama` | CORE-CR | Llama-3-8B-Instruct | 2 | Table 3 |
+| `core_cr_ppo` | CORE-CR + PPO backbone | Qwen2-Math-7B | 2 | Table 8 |
 
 Override the epoch count or W&B mode via environment variables:
 ```bash
@@ -115,7 +115,7 @@ bash scripts/eval/run_eval.sh <model_path> all
 
 **Supported benchmarks** (12): `gsm8k` · `math` · `asdiv` · `mawps` · `tabmwp` · `svamp` · `mmlu_stem` · `gaokao2023en` · `gaokao_math_qa` · `cmath` · `minerva_math` · `olympiadbench`
 
-> **Note**: A few paper benchmarks rely on data not included in this release: **Textbook** (the 140 in-domain textbook exercises; copyright-restricted, see [Data](#data)), **CounterMath** and **TheoremQA** (external datasets), and the AMC23 / College Math sets used in the PPO appendix (Table 6). Paper results for these were produced with the same harness on the external data.
+> **Note**: A few paper benchmarks rely on data not included in this release: **Textbook** (the 140 in-domain textbook exercises; copyright-restricted, see [Data](#data)), **CounterMath** and **TheoremQA** (external datasets), and the AMC23 / College Math sets used in the PPO appendix (Table 8). Paper results for these were produced with the same harness on the external data.
 
 ## Data
 
@@ -186,7 +186,7 @@ CORE consists of three training recipes built on top of GRPO:
 </details>
 
 <details>
-<summary><b>Table 4: Cross-Model Generalization</b></summary>
+<summary><b>Table 3: Cross-Model Generalization</b></summary>
 <br>
 
 | Model | Method | CMATH | GaoKao-QA | GaoKao-EN | MATH | MAWPS | MinervaM | MMLU-STEM | SVAMP | TabMWP |
