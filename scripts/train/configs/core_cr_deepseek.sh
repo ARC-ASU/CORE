@@ -1,0 +1,30 @@
+# CORE-CR on DeepSeek-R1-Distill-Qwen-1.5B (Table 4, Row 1)
+# max_response_length=6000 to accommodate extended reasoning
+
+MODEL_PATH="deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"
+TRAINER_MODULE="verl.trainer.main_ppo"
+ADV_ESTIMATOR="grpo"
+REWARD_MANAGER="concept_aug"
+USE_CONCEPT_FILE=true
+
+NUM_GPUS=4
+MAX_RESPONSE_LENGTH=6000
+TRAIN_BATCH_SIZE=128
+MICRO_BATCH_SIZE=4
+TENSOR_PARALLEL_SIZE=4
+GPU_MEMORY_UTIL=0.45
+LOG_PROB_MICRO_BATCH=8
+
+USE_KL_LOSS=True
+REF_PARAM_OFFLOAD=False
+GRAD_OFFLOAD=""
+OPTIMIZER_OFFLOAD=False
+
+# Extended sequence settings
+USE_EXTENDED_VLLM=true
+SWAP_SPACE=16
+MAX_NUM_BATCHED_TOKENS=12288
+MAX_NUM_SEQS=256
+
+SAVE_INFERENCE_ONLY=True
+PROJECT_NAME="core-cr-deepseek"

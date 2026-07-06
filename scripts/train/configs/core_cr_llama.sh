@@ -1,0 +1,33 @@
+# CORE-CR on Llama-3-8B-Instruct (Table 4, Row 3)
+# max_response_length=2048
+
+MODEL_PATH="meta-llama/Meta-Llama-3-8B-Instruct"
+TRAINER_MODULE="verl.trainer.main_ppo"
+ADV_ESTIMATOR="grpo"
+REWARD_MANAGER="concept_aug"
+USE_CONCEPT_FILE=true
+
+NUM_GPUS=2
+MAX_RESPONSE_LENGTH=2048
+TRAIN_BATCH_SIZE=128
+MICRO_BATCH_SIZE=4
+TENSOR_PARALLEL_SIZE=2
+GPU_MEMORY_UTIL=0.45
+LOG_PROB_MICRO_BATCH=8
+
+USE_KL_LOSS=True
+REF_PARAM_OFFLOAD=False
+GRAD_OFFLOAD=""
+OPTIMIZER_OFFLOAD=False
+
+# Extended sequence settings
+USE_EXTENDED_VLLM=true
+SWAP_SPACE=16
+MAX_NUM_BATCHED_TOKENS=12288
+MAX_NUM_SEQS=256
+
+# Llama-specific memory setting
+EXTRA_ENV="PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True"
+
+SAVE_INFERENCE_ONLY=True
+PROJECT_NAME="core-cr-llama"

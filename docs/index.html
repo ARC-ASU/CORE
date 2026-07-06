@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CORE: Concept-Oriented Reinforcement for Mathematical Reasoning</title>
+  <meta name="description" content="CORE bridges the definition-application gap in mathematical reasoning through concept-oriented reinforcement learning. ICLR 2026.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1565C0;
+      --primary-light: #42A5F5;
+      --primary-dark: #0D47A1;
+      --accent: #E65100;
+      --accent-light: #FF8A65;
+      --bg: #FAFBFC;
+      --surface: #FFFFFF;
+      --text: #1a1a2e;
+      --text-secondary: #555;
+      --text-muted: #888;
+      --border: #e8eaed;
+      --radius: 12px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ===== NAV ===== */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+    nav .logo {
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--primary);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+    nav .links { display: flex; gap: 6px; }
+    nav .links a {
+      padding: 6px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+    nav .links a:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      text-align: center;
+      padding: 64px 0 40px;
+    }
+    .hero .venue {
+      display: inline-block;
+      padding: 4px 16px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero .subtitle {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 700px;
+      margin: 0 auto 24px;
+      font-weight: 400;
+    }
+    .authors {
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+    .authors a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .authors a:hover { color: var(--primary); }
+    .authors sup { font-size: 0.7em; color: var(--primary); font-weight: 700; }
+    .affiliations {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(21,101,192,0.3);
+    }
+    .btn-outline {
+      background: white;
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .btn-outline:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+    .btn svg { width: 18px; height: 18px; }
+
+    /* ===== SECTIONS ===== */
+    section {
+      padding: 48px 0;
+    }
+    section h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      letter-spacing: -0.5px;
+    }
+    section p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    .divider {
+      border: none;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ===== FIGURE ===== */
+    .figure {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin: 24px 0;
+      text-align: center;
+    }
+    .figure img {
+      max-width: 100%;
+      border-radius: 8px;
+    }
+    .figure .caption {
+      margin-top: 14px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ===== ABSTRACT ===== */
+    .abstract-text {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      text-align: justify;
+    }
+
+    /* ===== METHOD CARDS ===== */
+    .method-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .method-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      transition: all 0.2s;
+    }
+    .method-card:hover {
+      border-color: var(--primary-light);
+      box-shadow: 0 4px 20px rgba(21,101,192,0.08);
+      transform: translateY(-2px);
+    }
+    .method-card .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .method-card:nth-child(1) .tag { background: #E3F2FD; color: #1565C0; }
+    .method-card:nth-child(2) .tag { background: #E8F5E9; color: #2E7D32; }
+    .method-card:nth-child(3) .tag { background: #FFF3E0; color: #E65100; }
+    .method-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .method-card p {
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    /* ===== RESULTS ===== */
+    .results-highlight {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin: 24px 0;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+    .stat-card .value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-card .delta {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #2E7D32;
+      margin-top: 2px;
+    }
+    .stat-card .label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .results-chart {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 24px 0;
+    }
+    .results-chart img {
+      width: 100%;
+    }
+
+    /* ===== TABLE ===== */
+    .table-wrapper {
+      overflow-x: auto;
+      margin: 20px 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    thead {
+      background: #f5f7fa;
+    }
+    th {
+      padding: 12px 14px;
+      font-weight: 600;
+      text-align: center;
+      border-bottom: 2px solid var(--border);
+      white-space: nowrap;
+    }
+    th:first-child { text-align: left; }
+    td {
+      padding: 10px 14px;
+      text-align: center;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    td:first-child {
+      text-align: left;
+      font-weight: 500;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover { background: #f8f9ff; }
+    .best { font-weight: 700; color: var(--primary-dark); }
+    .row-highlight { background: #f0f7ff; }
+    .row-highlight:hover { background: #e8f0fe; }
+
+    /* ===== DATA SECTION ===== */
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 20px;
+    }
+    .data-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+    }
+    .data-item .num {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      min-width: 60px;
+    }
+    .data-item .desc {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+    .data-item .desc strong {
+      display: block;
+      color: var(--text);
+      font-size: 0.92rem;
+    }
+
+    /* ===== BIBTEX ===== */
+    .bibtex {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      overflow-x: auto;
+      position: relative;
+    }
+    .bibtex .key { color: #89b4fa; }
+    .bibtex .val { color: #a6e3a1; }
+    .copy-btn {
+      position: absolute;
+      top: 12px; right: 12px;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #cdd6f4;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.2s;
+    }
+    .copy-btn:hover { background: rgba(255,255,255,0.2); }
+
+    /* ===== FOOTER ===== */
+    footer {
+      padding: 32px 0;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--primary); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 1.6rem; }
+      .method-grid { grid-template-columns: 1fr; }
+      .results-highlight { grid-template-columns: repeat(2, 1fr); }
+      .data-grid { grid-template-columns: 1fr; }
+      nav .links a { padding: 6px 10px; font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav>
+  <div class="container">
+    <a href="#" class="logo">CORE</a>
+    <div class="links">
+      <a href="#abstract">Abstract</a>
+      <a href="#method">Method</a>
+      <a href="#results">Results</a>
+      <a href="#data">Data</a>
+      <a href="#citation">Citation</a>
+      <a href="https://github.com/ARC-ASU/CORE">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="container">
+    <span class="venue">ICLR 2026</span>
+    <h1>CORE: Concept-Oriented Reinforcement for Bridging the Definition&ndash;Application Gap in Mathematical Reasoning</h1>
+    <p class="subtitle">Turning textbook concepts into training signals for stronger mathematical reasoning</p>
+
+    <div class="authors">
+      Zijun Gao<sup>1</sup> &nbsp;&nbsp;
+      Zhikun Xu<sup>2</sup> &nbsp;&nbsp;
+      Xiao Ye<sup>2</sup> &nbsp;&nbsp;
+      Ben Zhou<sup>2</sup>
+    </div>
+    <div class="affiliations">
+      <sup>1</sup>University of Illinois Urbana&ndash;Champaign &nbsp;&nbsp;
+      <sup>2</sup>Arizona State University
+    </div>
+
+    <div class="btn-row">
+      <a href="https://arxiv.org/abs/2512.18857" class="btn btn-primary">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4v16h16V8.83L15.17 4H4zm2 2h8v4h4v8H6V6zm2 5v2h8v-2H8zm0 4v2h5v-2H8z"/></svg>
+        Paper
+      </a>
+      <a href="https://arxiv.org/pdf/2512.18857" class="btn btn-outline">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 4v16h14V8.83L13.17 4H5zm2 2h5v5h5v7H7V6zm7 .5L17.5 10H14V6.5z"/></svg>
+        PDF
+      </a>
+      <a href="https://github.com/ARC-ASU/CORE" class="btn btn-outline">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.09.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0112 6.836a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+        Code
+      </a>
+      <a href="https://iclr.cc/virtual/2026/poster/10007328" class="btn btn-outline">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/></svg>
+        ICLR Poster
+      </a>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== ABSTRACT ===== -->
+<section id="abstract">
+  <div class="container">
+    <h2>Abstract</h2>
+    <p class="abstract-text">
+      Large language models (LLMs) have demonstrated impressive mathematical problem-solving capabilities. However, a significant gap exists between an LLM's ability to recite mathematical definitions and its capacity to effectively apply these concepts in novel problem-solving scenarios, a phenomenon we term the <em>definition&ndash;application gap</em>. To systematically investigate and address this gap, we leverage a classical mathematical textbook with clear associations between concepts and exercises, enabling both qualitative gap analysis and targeted training.
+    </p>
+    <br>
+    <p class="abstract-text">
+      We introduce <strong>CORE</strong> (Concept-Oriented REinforcement), an RL-based framework with three training recipes: <strong>CORE-Base</strong> trains directly on concept-aligned quizzes; <strong>CORE-CR</strong> (Concept Replacement) dynamically replaces failed trajectories with concept-guided ones; and <strong>CORE-KL</strong> uses forward KL divergence to distill concept-primed reasoning into the base policy. Experiments across 11 math benchmarks show consistent improvements over strong baselines, with gains of up to +9.6% on TheoremQA and +9.3% on the in-domain Textbook test set.
+    </p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== FRAMEWORK FIGURE ===== -->
+<section>
+  <div class="container">
+    <h2>Framework</h2>
+    <div class="figure">
+      <img src="https://raw.githubusercontent.com/ARC-ASU/CORE/main/assets/core_framework.png" alt="CORE Framework Overview">
+      <p class="caption">
+        <strong>Overview of the CORE framework.</strong> For a given query, the policy model generates multiple candidate solutions. If any is correct, CORE-Base proceeds with standard policy update. When all solutions fail, CORE activates concept-guided correction: the Concept Recall module retrieves relevant domain knowledge, and Concept Injection re-prompts the model. CORE-CR replaces failed trajectories with concept-primed ones, while CORE-KL distills the reasoning via forward KL loss.
+      </p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== METHOD ===== -->
+<section id="method">
+  <div class="container">
+    <h2>Three Training Recipes</h2>
+    <p>CORE provides three complementary approaches to inject conceptual understanding into RL training:</p>
+
+    <div class="method-grid">
+      <div class="method-card">
+        <span class="tag">Baseline</span>
+        <h3>CORE-Base</h3>
+        <p>Standard GRPO on 1,110 concept-aligned quizzes generated from the textbook. The model learns to implicitly connect concepts with problem-solving through rich training signals.</p>
+      </div>
+      <div class="method-card">
+        <span class="tag">Trajectory Replacement</span>
+        <h3>CORE-CR</h3>
+        <p>When all N responses fail, retrieves the relevant concept, re-prompts the model, and <strong>replaces</strong> failed trajectories with concept-primed ones. Adds a bonus reward r=0.4 to guide learning.</p>
+      </div>
+      <div class="method-card">
+        <span class="tag">KL Alignment</span>
+        <h3>CORE-KL</h3>
+        <p>Instead of replacing trajectories, adds a <strong>forward KL divergence</strong> loss to align the base policy with concept-primed reasoning. Uses asymmetric weights: &lambda;=0.03 for correct, &lambda;=0.005 for incorrect.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== RESULTS ===== -->
+<section id="results">
+  <div class="container">
+    <h2>Results</h2>
+    <p>CORE achieves consistent improvements across in-domain and out-of-domain math benchmarks.</p>
+
+    <div class="results-highlight">
+      <div class="stat-card">
+        <div class="value">+9.3</div>
+        <div class="delta">CORE-KL</div>
+        <div class="label">Textbook (in-domain)</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">+9.6</div>
+        <div class="delta">CORE-KL</div>
+        <div class="label">TheoremQA</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">+5.8</div>
+        <div class="delta">CORE-CR</div>
+        <div class="label">OlympiadBench</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">+3.4</div>
+        <div class="delta">CORE-CR</div>
+        <div class="label">TabMWP</div>
+      </div>
+    </div>
+
+    <div class="results-chart">
+      <img src="https://raw.githubusercontent.com/ARC-ASU/CORE/main/assets/results_improvement.svg" alt="Results improvement chart">
+    </div>
+
+    <h3 style="margin-top:32px; margin-bottom:12px;">Qwen2-Math-7B (Table 2)</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th><th>Textbook</th><th>GSM8K</th><th>ASDiv</th><th>MAWPS</th><th>TabMWP</th><th>MATH</th><th>MMLU-STEM</th><th>Gaokao</th><th>CounterMath</th><th>TheoremQA</th><th>OlympiadBench</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Vanilla</td><td>46.4</td><td>89.8</td><td>95.1</td><td>96.8</td><td>90.2</td><td>69.1</td><td>72.9</td><td>55.3</td><td>13.2</td><td>34.6</td><td>28.7</td>
+          </tr>
+          <tr>
+            <td>SFT</td><td>45.0</td><td>86.6</td><td>94.1</td><td>96.6</td><td>85.6</td><td>59.4</td><td>72.4</td><td>46.5</td><td class="best">16.7</td><td class="best">44.2</td><td>19.7</td>
+          </tr>
+          <tr>
+            <td>CORE-Base</td><td>50.7</td><td>90.8</td><td>95.4</td><td>97.2</td><td>92.6</td><td>71.1</td><td>72.9</td><td class="best">59.5</td><td>13.5</td><td>40.4</td><td>33.9</td>
+          </tr>
+          <tr class="row-highlight">
+            <td><strong>CORE-CR</strong></td><td>52.1</td><td class="best">91.1</td><td class="best">95.7</td><td>97.3</td><td class="best">93.6</td><td class="best">71.4</td><td>72.6</td><td>58.4</td><td>15.5</td><td>42.3</td><td class="best">34.5</td>
+          </tr>
+          <tr class="row-highlight">
+            <td><strong>CORE-KL</strong></td><td class="best">55.7</td><td>90.7</td><td>95.5</td><td class="best">97.5</td><td>90.6</td><td>70.5</td><td class="best">73.1</td><td class="best">59.5</td><td>15.8</td><td class="best">44.2</td><td>32.9</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:0.82rem; color:var(--text-muted); margin-top:8px;">
+      All results under SC@21 (self-consistency with 21 samples, T=0.7). <strong class="best">Bold</strong> = best in column.
+    </p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== DATA ===== -->
+<section id="data">
+  <div class="container">
+    <h2>Data</h2>
+    <p>We curate a corpus from <em>Advanced Algebra</em> (3rd Edition, Yao &amp; Xie, 2015), a canonical Chinese textbook manually translated to English.</p>
+
+    <div class="data-grid">
+      <div class="data-item">
+        <div class="num">236</div>
+        <div class="desc"><strong>Concept Definitions</strong>Core mathematical concepts from 10 chapters</div>
+      </div>
+      <div class="data-item">
+        <div class="num">703</div>
+        <div class="desc"><strong>Illustrative Examples</strong>Worked examples with step-by-step solutions</div>
+      </div>
+      <div class="data-item">
+        <div class="num">140</div>
+        <div class="desc"><strong>Textbook Exercises</strong>Multiple-choice test set (in-domain benchmark)</div>
+      </div>
+      <div class="data-item">
+        <div class="num">1,110</div>
+        <div class="desc"><strong>Concept Quizzes</strong>Training set &mdash; generated by Qwen2.5-72B, validated by GPT-4o</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== CITATION ===== -->
+<section id="citation">
+  <div class="container">
+    <h2>Citation</h2>
+    <p>If you find this work useful, please cite our paper:</p>
+    <br>
+    <div class="bibtex">
+      <button class="copy-btn" onclick="copyBibtex()">Copy</button>
+<span class="key">@inproceedings</span>{gao2026core,
+  title     = <span class="val">{{CORE}: Concept-Oriented Reinforcement for Bridging the Definition--Application Gap in Mathematical Reasoning}</span>,
+  author    = <span class="val">{Gao, Zijun and Xu, Zhikun and Ye, Xiao and Zhou, Ben}</span>,
+  booktitle = <span class="val">{International Conference on Learning Representations}</span>,
+  year      = <span class="val">{2026}</span>,
+  url       = <span class="val">{https://arxiv.org/abs/2512.18857}</span>
+}
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <p>
+      CORE &copy; 2025&ndash;2026 &nbsp;&middot;&nbsp;
+      <a href="https://github.com/ARC-ASU/CORE">GitHub</a> &nbsp;&middot;&nbsp;
+      <a href="https://arxiv.org/abs/2512.18857">arXiv</a> &nbsp;&middot;&nbsp;
+      <a href="https://iclr.cc/virtual/2026/poster/10007328">ICLR 2026</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+function copyBibtex() {
+  const text = `@inproceedings{gao2026core,
+  title     = {{CORE}: Concept-Oriented Reinforcement for Bridging the Definition--Application Gap in Mathematical Reasoning},
+  author    = {Gao, Zijun and Xu, Zhikun and Ye, Xiao and Zhou, Ben},
+  booktitle = {International Conference on Learning Representations},
+  year      = {2026},
+  url       = {https://arxiv.org/abs/2512.18857}
+}`;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+</script>
+
+</body>
+</html>
